@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <title>何分後通知してくれるくん</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="notification">何分後通知してくれるくん</div>
+      <h1 class="title is-1 has-text-centered" id="nowTime">00:00:00</h1>
+      <div class="columns">
+        <div class="column">
+          <div class="field has-addons">
+            <p class="control is-expanded">
+              <input class="input" type="number" placeholder="time" />
+            </p>
+            <p class="control">
+              <span class="select">
+                <select>
+                  <option>秒後</option>
+                  <option>分後</option>
+                  <option>時間後</option>
+                </select>
+              </span>
+            </p>
+          </div>
+        </div>
+        <div class="column is-two-fifths">
+          <div class="field has-addons">
+            <p class="control is-expanded">
+              <input
+                class="input"
+                type="text"
+                placeholder="カップラーメンができる"
+              />
+            </p>
+            <p class="control"><a class="button is-static">と</a></p>
+          </div>
+        </div>
+        <div class="column">
+          <a class="button is-primary is-fullwidth">通知する</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
