@@ -12,7 +12,7 @@ const checkNotification = () => {
     if (Notification.permission === "granted") {
       // 許可されている場合はNotificationで通知
       //window.alert("通知許可されています");
-      var n = new Notification("Hello World");
+      // var n = new Notification("Hello World");
     } else if (Notification.permission === "denied") {
       window.alert("通知拒否されているので許可してリロードしてください");
     } else if (Notification.permission === "default") {
@@ -23,7 +23,7 @@ const checkNotification = () => {
         } else if (result === "default") {
           console.log("保留されています");
         } else if (result === "granted") {
-          var n = new Notification("Hello World");
+          // var n = new Notification("Hello World");
         }
       });
     }
@@ -39,6 +39,7 @@ const timeUpdate = () => {
     alert.forEach(a => {
       if (a.time === nowFormate) {
         var n = new Notification(a.details);
+        removeDB(a.id);
       }
     });
   }, 1000);
@@ -58,7 +59,7 @@ const initDB = () => {
     console.log("db open error");
   };
 };
-const insertDB = (data) => {
+const insertDB = data => {
   const openReq = indexedDB.open(DB_NAME);
   openReq.onsuccess = function(event) {
     // var data = { time: "22:36:36", details: "ご飯食べたい" };
@@ -78,6 +79,21 @@ const insertDB = (data) => {
     console.log("db open error");
   };
 };
+const removeDB = id => {
+  const openReq = indexedDB.open(DB_NAME);
+  openReq.onsuccess = function(event) {
+    var db = event.target.result;
+    var trans = db.transaction(STORE_NAME, "readwrite");
+    var store = trans.objectStore(STORE_NAME);
+    var request = store.delete(id);
+    request.onsuccess = event => {
+      console.log("delete success");
+    };
+    request.onerror = event => {
+      console.log("error delete:" + event.message);
+    };
+  };
+};
 const getAlert = () => {
   const openReq = indexedDB.open(DB_NAME);
   openReq.onsuccess = function(event) {
@@ -92,34 +108,34 @@ const getAlert = () => {
     };
   };
 };
-// checkNotification();
+checkNotification();
 timeUpdate();
 initDB();
-// insertDB();
 getAlert();
 document.getElementById("AddNotification").addEventListener("click", () => {
   const addTime = document.getElementById("addTime").value;
   const detail = document.getElementById("detail").value;
   const timeUnit = document.getElementById("timeUnit").value;
-  if(addTime === ""){
-    window.alert("時間を入力してください")
-  }else{
+  if (addTime === "") {
+    window.alert("時間を入力してください");
+  } else {
     let alertDate = new Date();
-    switch(timeUnit){
-      case 'sec':
-        alertDate.setSeconds(alertDate.getSeconds() + parseInt(addTime,10));
+    switch (timeUnit) {
+      case "sec":
+        alertDate.setSeconds(alertDate.getSeconds() + parseInt(addTime, 10));
         break;
-      case 'min':
-        alertDate.setMinutes(alertDate.getMinutes() + parseInt(addTime,10));
+      case "min":
+        alertDate.setMinutes(alertDate.getMinutes() + parseInt(addTime, 10));
         break;
-      case 'hr':
-        alertDate.setHours(alertDate.getHours() + parseInt(addTime,10));
+      case "hr":
+        alertDate.setHours(alertDate.getHours() + parseInt(addTime, 10));
         break;
     }
     const alertFormate = dateFormat(alertDate, "HH:MM:ss");
     const data = {
-      time: alertFormate, details: detail === "" ? "時間になりました！" : detail
-    }
+      time: alertFormate,
+      details: detail === "" ? "時間になりました！" : detail
+    };
     // add indexdb
     insertDB(data);
     // fetch data
