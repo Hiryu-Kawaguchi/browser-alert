@@ -1,0 +1,16 @@
+version: '3'
+services:
+  nginx:
+    image: nginx:alpine
+    ports: 
+      - "8000:80"
+    volumes:
+      - ./dist:/usr/share/nginx/html
+  webpack:
+    build: ./
+    image: nginx_webpack
+    container_name: nginx_webpack_container
+    volumes:
+      - ./src:/src
+      - ./dist:/dist
+    
