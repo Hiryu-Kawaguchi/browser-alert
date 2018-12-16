@@ -108,10 +108,20 @@ const getAlert = () => {
     };
   };
 };
+const displayAlert = () => {
+  const displayAlert = document.getElementById("displayAlert");
+  const template = document.getElementById("displayTemplate");
+  const time = template.querySelector(".titleTime").innerHTML;
+  const detail = template.querySelector(".message-body").innerHTML;
+  const child = template.childNodes;
+  displayAlert.appendChild(template);
+  //console.log(template);
+};
 checkNotification();
 timeUpdate();
 initDB();
 getAlert();
+displayAlert();
 document.getElementById("AddNotification").addEventListener("click", () => {
   const addTime = document.getElementById("addTime").value;
   const detail = document.getElementById("detail").value;
