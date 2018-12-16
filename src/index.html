@@ -23,10 +23,10 @@
             </p>
             <p class="control">
               <span class="select">
-                <select>
-                  <option>秒後</option>
-                  <option>分後</option>
-                  <option>時間後</option>
+                <select id="timeUnit" name="timeUnit">
+                  <option value="sec">秒後</option>
+                  <option value="min" selected>分後</option>
+                  <option value="hr">時間後</option>
                 </select>
               </span>
             </p>
@@ -38,6 +38,7 @@
               <input
                 class="input"
                 type="text"
+                id="detail"
                 placeholder="カップラーメンができる"
               />
             </p>
@@ -45,7 +46,7 @@
           </div>
         </div>
         <div class="column">
-          <a class="button is-primary is-fullwidth">通知する</a>
+          <a class="button is-primary is-fullwidth" id="AddNotification">通知する</a>
         </div>
       </div>
     </div>
