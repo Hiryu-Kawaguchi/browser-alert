@@ -1,6 +1,7 @@
 // import Bulma
 import bulma from "./mystyles.scss";
 import dateFormat from "dateformat";
+import { htmlToElement } from "./conv";
 
 const DB_NAME = "notify";
 const STORE_NAME = "notice";
@@ -105,23 +106,54 @@ const getAlert = () => {
     getReq.onsuccess = function(event) {
       // 毎回DB問い合わせするのしんどいのでobjectにしとく
       alert = event.target.result;
+      // 画面更新
+      displayAlert();
     };
   };
 };
-const displayAlert = () => {
+function displayAlert() {
   const displayAlert = document.getElementById("displayAlert");
-  const template = document.getElementById("displayTemplate");
-  const time = template.querySelector(".titleTime").innerHTML;
-  const detail = template.querySelector(".message-body").innerHTML;
-  const child = template.childNodes;
-  displayAlert.appendChild(template);
-  //console.log(template);
-};
+  let addHtml = ``;
+  for (let i = 0; i < alert.length; i++) {
+    const time = alert[i].time;
+    const detail = alert[i].details;
+    const id = alert[i].id;
+    let html =
+      `<div class="column is-one-third">
+      <article class="message is-info">
+        <div class="message-header">
+          <p class="titleTime">` +
+      time +
+      `</p>
+          <button class="delete" data-id=` +
+      id +
+      ` aria-label="delete"></button>
+        </div>
+        <div class="message-body">` +
+      detail +
+      `</div>
+      </article>
+    </div>`;
+    if (i % 3 === 0) {
+      html = `<div class="columns">` + html;
+    } else if (i % 3 === 2 || i === alert.length - 1) {
+      html = html + `</div>`;
+    }
+    addHtml = addHtml + html;
+  }
+  if (addHtml !== ``) {
+    addHtml = `<div>` + addHtml + `</div>`;
+    // 一度childを空にする。もっと楽な方法あるんちゃう？
+    while (displayAlert.firstChild) {
+      displayAlert.removeChild(displayAlert.firstChild);
+    }
+    displayAlert.appendChild(htmlToElement(addHtml));
+  }
+}
 checkNotification();
 timeUpdate();
 initDB();
 getAlert();
-displayAlert();
 document.getElementById("AddNotification").addEventListener("click", () => {
   const addTime = document.getElementById("addTime").value;
   const detail = document.getElementById("detail").value;
