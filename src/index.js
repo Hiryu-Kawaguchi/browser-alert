@@ -58,6 +58,7 @@ const initDB = () => {
   };
   openReq.onerror = function() {
     console.log("db open error");
+    db.close();
   };
 };
 const insertDB = data => {
@@ -70,6 +71,7 @@ const insertDB = data => {
     var putReq = store.put(data);
     putReq.onsuccess = function() {
       console.log("put data success");
+      db.close();
     };
     trans.oncomplete = function() {
       console.log("transaction complete");
@@ -78,6 +80,7 @@ const insertDB = data => {
   };
   openReq.onerror = function(event) {
     console.log("db open error");
+    db.close();
   };
 };
 const removeDB = id => {
@@ -89,10 +92,13 @@ const removeDB = id => {
     var request = store.delete(id);
     request.onsuccess = event => {
       console.log("delete success");
-      getAlert();
+      db.close();
+      // getAlertを実行してもカードが消えないのでしゃあなしでリロード
+      location.reload(false);
     };
     request.onerror = event => {
       console.log("error delete:" + event.message);
+      db.close();
     };
   };
 };
@@ -108,6 +114,7 @@ function getAlert() {
       // 毎回DB問い合わせするのしんどいのでobjectにしとく
       alert = event.target.result;
       console.log(alert);
+      db.close();
       // 画面更新
       displayAlert();
     };
