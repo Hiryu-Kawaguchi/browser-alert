@@ -42,7 +42,8 @@ module.exports = {
   plugins: [
     new ExtractTextPlugin("mystyles.css"),
     new HtmlWebPackPlugin({
-      template: "./src/index.html"
+      template: "./src/index.html",
+      favicon: "./src/favicon.ico"
     })
   ]
 };
