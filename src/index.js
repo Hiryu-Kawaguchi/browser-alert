@@ -89,13 +89,14 @@ const removeDB = id => {
     var request = store.delete(id);
     request.onsuccess = event => {
       console.log("delete success");
+      getAlert();
     };
     request.onerror = event => {
       console.log("error delete:" + event.message);
     };
   };
 };
-const getAlert = () => {
+function getAlert() {
   const openReq = indexedDB.open(DB_NAME);
   openReq.onsuccess = function(event) {
     var db = event.target.result;
@@ -106,11 +107,12 @@ const getAlert = () => {
     getReq.onsuccess = function(event) {
       // 毎回DB問い合わせするのしんどいのでobjectにしとく
       alert = event.target.result;
+      console.log(alert);
       // 画面更新
       displayAlert();
     };
   };
-};
+}
 function displayAlert() {
   const displayAlert = document.getElementById("displayAlert");
   let addHtml = ``;
@@ -148,39 +150,52 @@ function displayAlert() {
       displayAlert.removeChild(displayAlert.firstChild);
     }
     displayAlert.appendChild(htmlToElement(addHtml));
+    deleteClick();
   }
 }
-checkNotification();
-timeUpdate();
-initDB();
-getAlert();
-document.getElementById("AddNotification").addEventListener("click", () => {
-  const addTime = document.getElementById("addTime").value;
-  const detail = document.getElementById("detail").value;
-  const timeUnit = document.getElementById("timeUnit").value;
-  if (addTime === "") {
-    window.alert("時間を入力してください");
-  } else {
-    let alertDate = new Date();
-    switch (timeUnit) {
-      case "sec":
-        alertDate.setSeconds(alertDate.getSeconds() + parseInt(addTime, 10));
-        break;
-      case "min":
-        alertDate.setMinutes(alertDate.getMinutes() + parseInt(addTime, 10));
-        break;
-      case "hr":
-        alertDate.setHours(alertDate.getHours() + parseInt(addTime, 10));
-        break;
-    }
-    const alertFormate = dateFormat(alertDate, "HH:MM:ss");
-    const data = {
-      time: alertFormate,
-      details: detail === "" ? "時間になりました！" : detail
-    };
-    // add indexdb
-    insertDB(data);
-    // fetch data
-    getAlert();
+function deleteClick() {
+  const hoge = document.getElementsByClassName("delete");
+  for (var i = 0; i < hoge.length; i++) {
+    hoge[i].addEventListener("click", e => {
+      const deleteId = parseInt(e.target.attributes["data-id"].value, 10);
+      removeDB(deleteId);
+    });
   }
-});
+}
+function init() {
+  checkNotification();
+  timeUpdate();
+  initDB();
+  getAlert();
+  document.getElementById("AddNotification").addEventListener("click", () => {
+    const addTime = document.getElementById("addTime").value;
+    const detail = document.getElementById("detail").value;
+    const timeUnit = document.getElementById("timeUnit").value;
+    if (addTime === "") {
+      window.alert("時間を入力してください");
+    } else {
+      let alertDate = new Date();
+      switch (timeUnit) {
+        case "sec":
+          alertDate.setSeconds(alertDate.getSeconds() + parseInt(addTime, 10));
+          break;
+        case "min":
+          alertDate.setMinutes(alertDate.getMinutes() + parseInt(addTime, 10));
+          break;
+        case "hr":
+          alertDate.setHours(alertDate.getHours() + parseInt(addTime, 10));
+          break;
+      }
+      const alertFormate = dateFormat(alertDate, "HH:MM:ss");
+      const data = {
+        time: alertFormate,
+        details: detail === "" ? "時間になりました！" : detail
+      };
+      // add indexdb
+      insertDB(data);
+      // fetch data
+      getAlert();
+    }
+  });
+}
+init();
